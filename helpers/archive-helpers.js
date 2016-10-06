@@ -22,16 +22,32 @@ exports.initialize = function(pathsObj) {
   });
 };
 
-// The following function names are provided to you to suggest how you might
+// The following function names are provided to you to nsuggest how you might
 // modularize your code. Keep it clean!
 
-exports.readListOfUrls = function() {
+exports.readListOfUrls = function(cb) {
+  fs.readFile(exports.paths.list, 'utf-8', function(err, data) {
+    cb(data.split('\n'));
+  });
 };
 
-exports.isUrlInList = function() {
+exports.isUrlInList = function(url, cb) {
+  console.log('isUrlInList');
+  exports.readListOfUrls(function(sites) {
+    cb(sites.indexOf(url) >= 0);
+  }); 
 };
 
-exports.addUrlToList = function() {
+exports.addUrlToList = function(url, cb) {
+  fs.appendFile(exports.paths.list, url, 'utf-8', function (err) {
+    if (err) {
+      throw err;
+    }
+  });
+  exports.readListOfUrls(function(results) {
+    console.log (results);
+  });
+  cb();
 };
 
 exports.isUrlArchived = function() {
