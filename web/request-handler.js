@@ -1,7 +1,7 @@
 var path = require('path');
 var archive = require('../helpers/archive-helpers');
 var fs = require('fs');
-var http = require ('./http-helpers');
+var helpers = require ('./http-helpers');
 
 // require more modules/folders here!
 exports.handleRequest = function (req, res) {
@@ -15,7 +15,7 @@ exports.handleRequest = function (req, res) {
     // if not return 404
 
 
-    res.writeHead(200, http.headers);
+    res.writeHead(200, helpers.headers);
     fs.readFile('web/public/index.html', 'utf-8', function (err, data) {
       if (err) {
         throw err;

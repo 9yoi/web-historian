@@ -1,5 +1,6 @@
 var fs = require('fs');
 var path = require('path');
+var http = require('http');
 var _ = require('underscore');
 
 /*
@@ -32,7 +33,6 @@ exports.readListOfUrls = function(cb) {
 };
 
 exports.isUrlInList = function(url, cb) {
-  console.log('isUrlInList');
   exports.readListOfUrls(function(sites) {
     cb(sites.indexOf(url) >= 0);
   }); 
@@ -45,13 +45,33 @@ exports.addUrlToList = function(url, cb) {
     }
   });
   exports.readListOfUrls(function(results) {
-    console.log (results);
+    cb(results);
   });
-  cb();
 };
 
-exports.isUrlArchived = function() {
+exports.isUrlArchived = function(url, cb) {
+  fs.stat(exports.paths.archivedSites + '/' + url, function (err, stats) {
+    if (err) {
+      cb(false);
+    } else {
+      cb(stats.isFile());
+    }
+  });
 };
 
-exports.downloadUrls = function() {
+exports.downloadUrls = function(urls) {
+  urls.forEach(function(url) {
+    var fileName = exports.paths.archivedSites + '/' + url;
+    var file = fs.createWriteStream(fileName);
+    var request = http.get(url, function(response) {  
+      console.log(response);
+    //   response.pipe(file);
+    //   file.on('finish', function () {
+    //     file.close();
+    //     console.log(file);
+    //   });
+    // }).on('error', function(err) {
+    //   fs.unlink(fileName);
+    });
+  });
 };
