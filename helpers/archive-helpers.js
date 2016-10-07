@@ -26,6 +26,11 @@ exports.initialize = function(pathsObj) {
 // The following function names are provided to you to nsuggest how you might
 // modularize your code. Keep it clean!
 
+exports.test = function() {
+  console.log(test);
+};
+
+//returns an array of urls from sites.text
 exports.readListOfUrls = function(cb) {
   fs.readFile(exports.paths.list, 'utf-8', function(err, data) {
     cb(data.split('\n'));
@@ -60,18 +65,14 @@ exports.isUrlArchived = function(url, cb) {
 };
 
 exports.downloadUrls = function(urls) {
+
   urls.forEach(function(url) {
     var fileName = exports.paths.archivedSites + '/' + url;
     var file = fs.createWriteStream(fileName);
-    var request = http.get(url, function(response) {  
-      console.log(response);
-    //   response.pipe(file);
-    //   file.on('finish', function () {
-    //     file.close();
-    //     console.log(file);
-    //   });
-    // }).on('error', function(err) {
-    //   fs.unlink(fileName);
+    http.get('http://' + url, function(response) {
+      response.pipe(file);
+    }).on('error', function (error) {
+      console.log(error);
     });
   });
 };

@@ -2,42 +2,33 @@ var path = require('path');
 var archive = require('../helpers/archive-helpers');
 var fs = require('fs');
 var helpers = require ('./http-helpers');
+var urlParser = require('url');
 
-// require more modules/folders here!
-exports.handleRequest = function (req, res) {
-  if (req.method === 'GET') {  
-    // save url
-    var url = req.url;
-    // if url is in sites.txt
-    
-      // serve up static site from sites directory
+var actions = {
+  'GET': function (req, res) {
+    var path = urlParser.parse(req.url).pathname;
+    //???? why is index.html === /
+    if (path === '/') {
+      path = '/index.html';
+    }
 
-    // if not return 404
+    //helpers.serveAssets(res, path);
+  
+  },
 
+  'POST': function (req, res) {
 
-    res.writeHead(200, helpers.headers);
-    fs.readFile('web/public/index.html', 'utf-8', function (err, data) {
-      if (err) {
-        throw err;
-      } else {
-        //res.write(data);
-        res.end(data);
-      }
-    });
-  } 
+  }
 };
 
-// exports.handleRequest = function (req, res) {
-//   if (req.method === 'GET') {  
-//     res.writeHead(200, http.headers);
-//     fs.readFile('web/public/index.html', 'utf-8', function (err, data) {
-//       if (err) {
-//         throw err;
-//       } else {
-//         //res.write(data);
-//         res.end(data);
-//       }
-//     });
-//   } 
-// };
+// require more modules/folders here!
 
+exports.handleRequest = function (req, res) {
+  var action = actions[req.method];
+  // calls the relevant method in actions object
+  if (action) {
+    action(req, res);
+  } else {
+    helpers.send404(res);
+  }
+};
