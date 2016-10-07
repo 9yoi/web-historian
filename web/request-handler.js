@@ -11,13 +11,26 @@ var actions = {
     if (path === '/') {
       path = '/index.html';
     }
-
-    //helpers.serveAssets(res, path);
-  
+    // send into helper function for flow
+    helpers.serveAssets(res, path, function () {
+      // this is the callback function for the case when nothing is found
+      archive.isUrlInList(path, function (bool) {
+        //is it still loading?
+        if (bool) {
+          helpers.sendRedirect(res, '/loading.html');
+        } else {
+          console.log('here');
+          helpers.send404(res);
+        }
+      });
+    });
   },
 
   'POST': function (req, res) {
-
+    var path = urlParser.parse(req.url).pathname;
+    archive.addUrlToList(path, function() {
+      helpers.sendRedirect(res, '/loading.html');
+    });
   }
 };
 

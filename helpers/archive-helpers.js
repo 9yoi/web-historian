@@ -44,13 +44,11 @@ exports.isUrlInList = function(url, cb) {
 };
 
 exports.addUrlToList = function(url, cb) {
-  fs.appendFile(exports.paths.list, url, 'utf-8', function (err) {
+  fs.appendFile(exports.paths.list, url + '\n', function (err, file) {
     if (err) {
       throw err;
     }
-  });
-  exports.readListOfUrls(function(results) {
-    cb(results);
+    cb();
   });
 };
 
