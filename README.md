@@ -1,2 +1,3 @@
-#web-historian
-This is a project I completed as a student at [hackreactor](http://hackreactor.com). This project was worked on with a pair.
+A web service that archives sites on the internet
+
+Uses: Bluebird.js, Chron
